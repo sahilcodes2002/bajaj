@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 
-/* 1. Apply to your scroll container */
+
 .scroll-container {
-  /* Firefox */
-  scrollbar-width: none;           /* :contentReference[oaicite:0]{index=0} */
-  /* IE 10+ */
-  -ms-overflow-style: none;        /* :contentReference[oaicite:1]{index=1} */
+  
+  scrollbar-width: none;           
+  
+  -ms-overflow-style: none;        
 }
 
-/* 2. WebKit browsers */
+
 .scroll-container::-webkit-scrollbar {
-  display: none;                   /* :contentReference[oaicite:2]{index=2} */
+  display: none;                  
 }

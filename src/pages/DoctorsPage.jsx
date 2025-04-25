@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import AutocompleteSearch from '../components/AutocompleteSearch';
@@ -36,13 +35,13 @@ function DoctorsPage() {
     fetchDoctors();
   }, []);
 
-  // URL‐driven filters
+  
   const searchQuery = searchParams.get('search') || '';
   const consultationType = searchParams.get('consultation') || '';
   const selectedSpecialties = searchParams.get('specialties')?.split(',') || [];
   const sortBy = searchParams.get('sort') || '';
 
-  // Apply filtering + sorting (unchanged)…
+  
   const filteredDoctors = doctors.filter(doctor => {
     const matchesSearch =
       doctor.name?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -58,6 +57,7 @@ function DoctorsPage() {
       );
     return matchesSearch && matchesConsultation && matchesSpecialties;
   });
+
   const sortedDoctors = [...filteredDoctors].sort((a, b) => {
     if (sortBy === 'fees') {
       const aFee = parseInt(a.fees?.replace(/\D/g, ''), 10) || 0;
@@ -72,7 +72,7 @@ function DoctorsPage() {
     return 0;
   });
 
-  // URL param helpers…
+  
   const updateParams = params => setSearchParams(params, { replace: true });
   const handleSearch = q => {
     const p = new URLSearchParams(searchParams);
@@ -96,6 +96,17 @@ function DoctorsPage() {
     sortType ? p.set('sort', sortType) : p.delete('sort');
     updateParams(p);
   };
+  
+  const handleClearSpecialties = () => {
+    const p = new URLSearchParams(searchParams);
+    p.delete('specialties');
+    updateParams(p);
+  };
+  const handleClearConsultation = () => {
+    const p = new URLSearchParams(searchParams);
+    p.delete('consultation');
+    updateParams(p);
+  };
 
   if (isLoading) {
     return <div data-testid="loading">Loading...</div>;
@@ -103,8 +114,8 @@ function DoctorsPage() {
 
   return (
     <div className="w-full text-xs h-screen overflow-hidden bg-slate-100 flex flex-col">
-      {/* 1. Autocomplete Header */}
-      <div className="bg-blue-600 py-5 px-10 h-16">
+      
+      <div className="bg-blue-600 py-3 px-10 h-14 z-50">
         <AutocompleteSearch
           value={searchQuery}
           onChange={handleSearch}
@@ -112,10 +123,10 @@ function DoctorsPage() {
         />
       </div>
 
-      {/* 2. Filters + Scrollable Doctor List */}
-      <div className="mx-40 flex flex-1 min-h-0 text-xs">
-        {/* Filters (fixed width) */}
-        <div className="w-72 overflow-hidden">
+      
+      <div className="mx-40 flex flex-1 min-h-0 text-xs z-10">
+        
+        <div className="w-72 overflow-hidden z-50">
           <FilterPanel
             consultationType={consultationType}
             selectedSpecialties={selectedSpecialties}
@@ -124,11 +135,13 @@ function DoctorsPage() {
             onConsultationChange={handleConsultationChange}
             onSpecialtyChange={handleSpecialtyChange}
             onSortChange={handleSortChange}
+            onClearSpecialties={handleClearSpecialties}
+            onClearConsultation={handleClearConsultation}
           />
         </div>
 
-        {/* Doctor list: flex-1 + min-h-0 + overflow-y-auto */}
-        <div className="flex-1 min-h-0 overflow-y-auto p-4 scroll-container">
+        
+        <div className="flex-1 min-h-0 overflow-y-auto px-4 scroll-container">
           <DoctorList doctors={sortedDoctors} />
         </div>
       </div>
